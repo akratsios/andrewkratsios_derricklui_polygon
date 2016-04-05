@@ -1,1 +1,2 @@
-# andrewkratsios_derricklui_polygon
+# #Graphics2016
+Make Comp Sci Great Again
