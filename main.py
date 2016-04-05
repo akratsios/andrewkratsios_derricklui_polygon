@@ -17,6 +17,6 @@ fname = None
 if len(sys.argv) >= 2:
     fname = sys.argv[1]
 else:
-    fname = 'script_nocurves'
+    fname = 'testing'
 
 parse_file( fname, edges, transform, screen, color )
