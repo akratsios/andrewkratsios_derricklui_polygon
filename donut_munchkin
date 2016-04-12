@@ -1,0 +1,29 @@
+# TEST BOX MESH
+sphere
+425 470 80
+# sphere
+# 625 425 110
+# sphere
+# 825 425 140
+torus
+825 425 100 150
+translate
+100 50 100
+# torus
+# 550 250 50 150
+translate
+100 50 100
+ident
+xrotate
+60
+yrotate
+50
+# translate
+# 0 250 0
+translate
+100 50 100
+apply
+display
+# save
+# lines.png
+quit
