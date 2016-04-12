@@ -51,35 +51,61 @@ jdyrlandweaver
 ====================*/
 void draw_polygons( struct matrix *polygons, screen s, color c ) {
 
-	int i;
-	
-	for(i=0; i < polygons->lastcol; i+=3) {
-		draw_line(polygons->m[0][i],
-							polygons->m[1][i],
-							polygons->m[0][i+1],
-							polygons->m[1][i+1], s, c);
-		
-		draw_line(polygons->m[0][i+1],
-							polygons->m[1][i+1],
-							polygons->m[0][i+2],
-							polygons->m[1][i+2], s, c);
-		
-		draw_line(polygons->m[0][i+2],
-							polygons->m[1][i+2],
-							polygons->m[0][i],
-							polygons->m[1][i], s, c);
+  if (polygons->lastcol < 3){
+    printf("Please select 3 points or more. \n");
+    return;
+  }
+  
+  int i;
+  double Ax, Ay, Az, Bx, By, Bz, Cx, Cy, Cz, Vx, Vy, Vz;
+  for (i = 0; i < polygons->lastcol - 1; i +=3){
 
-	}
+    Ax = polygons -> m[0][i+1]-polygons->m[0][i];
+    Ay = polygons -> m[1][i+1]-polygons->m[1][i];
+    Az = polygons -> m[2][i+1]-polygons->m[2][i];
+    
+    Bx = polygons -> m[0][i+2]-polygons->m[0][i];
+    By = polygons -> m[1][i+2]-polygons->m[1][i];
+    Bz = polygons -> m[2][i+2]-polygons->m[2][i];
 
+    Cx = Ay*Bz - Az*By;
+    Cy = Az*Bx - Ax*Bz;
+    Cz = Ax*By - Ay*Bx;
+    
+    Vx = 0;
+    Vy = 0;
+    Vz = -1;
+
+    if (Cx*Vx + Cy*Vy + Cz*Vz < 0){
+      draw_line(polygons->m[0][i],
+								polygons->m[1][i],
+								polygons->m[0][i+1],
+								polygons->m[1][i+1],s,c);
+			/* draw_line(polygons->m[0][i+1], */
+			/* 					polygons->m[1][i+1], */
+			/* 					polygons->m[0][i], */
+			/* 					polygons->m[1][i],s,c); */
+			
+			draw_line(polygons->m[0][i+1],
+								polygons->m[1][i+1],
+								polygons->m[0][i+2],
+								polygons->m[1][i+2], s, c);
+			
+			draw_line(polygons->m[0][i],
+								polygons->m[1][i],
+								polygons->m[0][i+2],
+								polygons->m[1][i+2], s, c);
+    }
+  }
 }
 
 
 /*======== void add_sphere() ==========
   Inputs:   struct matrix * points
-            double cx
-	    double cy
-	    double r
-	    double step  
+	double cx
+	double cy
+	double r
+	double step  
   Returns: 
 
   adds all the points for a sphere with center 
@@ -91,8 +117,8 @@ void draw_polygons( struct matrix *polygons, screen s, color c ) {
   jdyrlandweaver
   ====================*/
 void add_sphere( struct matrix * points, 
-		 double cx, double cy, double r, 
-		 int step ) {
+								 double cx, double cy, double r, 
+								 int step ) {
 
   struct matrix * temp;
   int lat, longt;
