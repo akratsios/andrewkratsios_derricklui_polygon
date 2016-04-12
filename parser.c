@@ -109,6 +109,11 @@ void parse_file ( char * filename,
       add_edge(pm, x, y, z, x1, y1, z1);
       // printf( "%lf %lf %lf %lf %lf %lf\n", x, y, z, x1, y1, z1);
     }
+    else if ( strncmp(line, "polygon", strlen(line)) == 0 ) {
+      fgets(line, 255, f);
+      sscanf(line, "%lf %lf %lf %lf %lf %lf %lf %lf %lf", &x, &y, &z, &x1, &y1, &z1, &x2, &y2, &z2);
+      add_polygon(pm, x, y, z, x1, y1, z1, x2, y2, z2);
+    }
     else if ( strncmp(line, "circle", strlen(line)) == 0 ) {
       //printf("CIRCLE\n");
       fgets(line, 255, f);
@@ -120,7 +125,7 @@ void parse_file ( char * filename,
       //printf("BEZIER\n");
       fgets(line, 255, f);
       sscanf(line, "%lf %lf %lf %lf %lf %lf %lf %lf",
-	     &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4);
+       &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4);
       add_curve(pm, x1, y1, x2, y2, x3, y3, x4, y4, 0.01, BEZIER_MODE );
       //printf( "%lf %lf %lf\n", x, y, z);
     }    
@@ -128,7 +133,7 @@ void parse_file ( char * filename,
       //printf("HERMITE\n");
       fgets(line, 255, f);
       sscanf(line, "%lf %lf %lf %lf %lf %lf %lf %lf",
-	     &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4);
+       &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4);
       add_curve(pm, x1, y1, x2, y2, x3, y3, x4, y4, 0.01, HERMITE_MODE );
       //printf( "%lf %lf %lf\n", x, y, z);
     }
@@ -141,13 +146,13 @@ void parse_file ( char * filename,
     else if (strncmp(line, "sphere", strlen(line)) == 0 ) {
       fgets(line, 255, f);
       sscanf(line, "%lf %lf %lf", &x, &y, &z);
-      add_sphere(pm, x, y, z, 1);
+      add_sphere(pm, x, y, z, 5);
       //printf( "%lf %lf %lf\n", x, y, z);
     }
     else if (strncmp(line, "torus", strlen(line)) == 0 ) {
       fgets(line, 255, f);
       sscanf(line, "%lf %lf %lf %lf", &x, &y, &z, &z1);
-      add_torus(pm, x, y, z, z1, 1);
+      add_torus(pm, x, y, z, z1, 5);
       //printf( "%lf %lf %lf\n", x, y, z);
     }
     else if ( strncmp(line, "scale", strlen(line)) == 0 ) {
@@ -203,7 +208,7 @@ void parse_file ( char * filename,
     }
     else if ( strncmp(line, "display", strlen(line)) == 0 ) {
       clear_screen(s);
-      draw_lines(pm, s, g);
+      draw_polygons(pm, s, g);
       display(s);
     }
     else if ( strncmp(line, "save", strlen(line)) == 0 ) {
@@ -229,4 +234,3 @@ void parse_file ( char * filename,
   //printf("END PARSE\n");
 }
 
-  
