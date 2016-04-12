@@ -24,6 +24,6 @@ translate
 100 50 100
 apply
 display
-# save
-# lines.png
+save
+donut.png
 quit
