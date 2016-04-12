@@ -143,7 +143,6 @@ void add_sphere( struct matrix * points,
 										 temp->m[2][i+1]);
       
       }else{
-				
 				// Second half of the sphere
       	add_polygon( points, 
 										 temp->m[0][index], temp->m[1][index],
@@ -234,39 +233,163 @@ void generate_sphere( struct matrix * points,
 	03/22/12 13:34:03
 	jdyrlandweaver
 	====================*/
+
 void add_torus( struct matrix * points, 
-								double cx, double cy, double r1, double r2, 
-								int step ) {
+								double cx, double cy,
+								double r1, double r2, int step ) {
 
-	struct matrix * temp;
-	int lat, longt;
-	int index;
-	int num_steps;
+  struct matrix * temp;
+  int lat, longt, index, num_steps;
   
-	num_steps = MAX_STEPS / step;
+  num_steps = MAX_STEPS / step;
+  temp = new_matrix( 4, num_steps * num_steps );
+  //generate the points on the torus
+  generate_torus( temp, cx, cy, r1, r2, step );
 
-	temp = new_matrix( 4, num_steps * num_steps );
-	//generate the points on the torus
-	generate_torus( temp, cx, cy, r1, r2, step );
-
-	int latStop, longtStop, latStart, longStart;
-	latStart = 0;
-	longStart = 0;
-	latStop = num_steps;
-	longtStop = num_steps;
-	for ( lat = 0; lat < num_steps; lat++ )
-		for ( longt = 0; longt < num_steps; longt++ ) {
+  int latStop, longtStop, latStart, longStart;
+  latStart = 0;
+  longStart = 0;
+  latStop = num_steps;
+  longtStop = num_steps;
+  
+  for ( lat = latStart; lat < latStop; lat++ )
+    for ( longt = longStart; longt < longtStop; longt++ ) {
       
-			index = lat * num_steps + longt;
+      index = lat * num_steps + longt;
       
-			add_edge( points, temp->m[0][index],
-								temp->m[1][index],
-								temp->m[2][index],
-								temp->m[0][index] + 1,
-								temp->m[1][index] + 1,
-								temp->m[2][index] );
-		}//end points only
+      if(lat == latStop-1){
+      	
+      	int i = latStart * num_steps + longt;
+				
+      	if(longt == longtStop-1){
+					add_polygon( points,
+											 temp->m[0][index],
+											 temp->m[1][index],
+											 temp->m[2][index],
+											 temp->m[0][i-longt],
+											 temp->m[1][i-longt],
+											 temp->m[2][i-longt],
+											 temp->m[0][i],
+											 temp->m[1][i],
+											 temp->m[2][i]);
+					/* add_polygon( points, */
+					/* 	       temp->m[0][index+num_steps+1-(num_steps*num_steps)], */
+					/* 	       temp->m[1][index+num_steps+1-(num_steps*num_steps)], */
+					/* 	       temp->m[2][index+num_steps+1-(num_steps*num_steps)]); */
+					add_polygon( points,
+											 temp->m[0][index],
+											 temp->m[1][index],
+											 temp->m[2][index],
+											 temp->m[0][index-num_steps+1],
+											 temp->m[1][index-num_steps+1],
+											 temp->m[2][index-num_steps+1],
+											 temp->m[0][i-longt],
+											 temp->m[1][i-longt],
+											 temp->m[2][i-longt]);
+					/* add_polygon( points, */
+					/* 						 temp->m[1][i], */
+					/* 						 temp->m[2][i], */
+					/* 						 temp->m[3][i], */
+											 }else{
+						add_polygon( points,
+												 temp->m[0][index],
+												 temp->m[1][index],
+												 temp->m[2][index],
+												 temp->m[0][i+1],
+												 temp->m[1][i+1],
+												 temp->m[2][i+1],
+												 temp->m[0][i],
+												 temp->m[1][i],
+												 temp->m[2][i]);
+						/* add_polygon( points, */
+						/* 						 temp->m[0][i+1], */
+						/* 						 temp->m[1][i+1], */
+						/* 						 temp->m[2][i+1], */
+						/* 						 temp->m[0][i+1], */
+						/* 						 temp->m[1][i+1], */
+						/* 						 temp->m[2][i+1], */
+						/* 						 temp->m[0][index], */
+						/* 						 temp->m[1][index], */
+						/* 						 temp->m[2][index]); */
+						add_polygon( points,
+												 temp->m[0][index],
+												 temp->m[1][index],
+												 temp->m[2][index],
+												 temp->m[0][index+1],
+												 temp->m[1][index+1],
+												 temp->m[2][index+1],
+												 temp->m[0][i+1],
+												 temp->m[1][i+1],
+												 temp->m[2][i+1]);
+				}
+			}else{
+				if(longt == longtStop-1){
+					add_polygon( points,
+											 temp->m[0][index],
+											 temp->m[1][index],
+											 temp->m[2][index],
+											 temp->m[0][index+1],
+											 temp->m[1][index+1],
+											 temp->m[2][index+1],
+											 temp->m[0][index+num_steps],
+											 temp->m[1][index+num_steps],
+											 temp->m[2][index+num_steps]);
+					/* add_polygon( points, */
+					/* 						 temp->m[0][index], */
+					/* 						 temp->m[1][index], */
+					/* 						 temp->m[2][index], */
+					/* 						 temp->m[0][i+1], */
+					/* 						 temp->m[1][i], */
+					/* 						 temp->m[2][i+1], */
+					/* 						 temp->m[0][index+1], */
+					/* 						 temp->m[1][index+1], */
+					/* 						 temp->m[2][i]); */
+					add_polygon( points,
+											 temp->m[0][index],
+											 temp->m[1][index],
+											 temp->m[2][index],
+											 temp->m[0][index-longt],
+											 temp->m[1][index-longt],
+											 temp->m[2][index-longt],
+											 temp->m[0][index+1],
+											 temp->m[1][index+1],
+											 temp->m[2][index+1]);
+				}else{
+					add_polygon( points, 
+											 temp->m[0][index],
+											 temp->m[1][index],
+											 temp->m[2][index],
+											 temp->m[0][index+num_steps+1],
+											 temp->m[1][index+num_steps+1],
+											 temp->m[2][index+num_steps+1],
+											 temp->m[0][index+num_steps],
+											 temp->m[1][index+num_steps],
+											 temp->m[2][index+num_steps]);
+					/* add_polygon( points, */
+					/* 						 temp->m[0][index], */
+					/* 						 temp->m[1][index], */
+					/* 						 temp->m[2][index], */
+					/* 						 temp->m[0][i+1], */
+					/* 						 temp->m[2][i+1], */
+					/* 						 temp->m[3][i], */
+					/* 						 temp->m[0][i+1], */
+					/* 						 temp->m[1][index], */
+					/* 						 temp->m[2][i+1]); */
+					add_polygon( points,
+											 temp->m[0][index],
+											 temp->m[1][index],
+											 temp->m[2][index],
+											 temp->m[0][index+1],
+											 temp->m[1][index+1],
+											 temp->m[2][index+1],
+											 temp->m[0][index+num_steps+1],
+											 temp->m[1][index+num_steps+1],
+											 temp->m[2][index+num_steps+1]);
+				}
+			}
+		}
 }
+
 
 /*======== void generate_torus() ==========
 	Inputs:   struct matrix * points
@@ -329,39 +452,40 @@ void generate_torus( struct matrix * points,
 
 	jdyrlandweaver
 	====================*/
-void add_box( struct matrix * points,
+
+void add_box( struct matrix * polygons, //add triangles instead of points
 							double x, double y, double z,
 							double width, double height, double depth ) {
 
-	double x2, y2, z2;
-	x2 = x + width;
-	y2 = y - height;
-	z2 = z - depth;
+  double x2, y2, z2;
+  x2 = x + width;
+  y2 = y - height;
+  z2 = z - depth;
 
-	add_edge( points, 
-						x, y, z, 
-						x, y, z );
-	add_edge( points, 
-						x, y2, z, 
-						x, y2, z );
-	add_edge( points, 
-						x2, y, z, 
-						x2, y, z );
-	add_edge( points, 
-						x2, y2, z, 
-						x2, y2, z );
-	add_edge( points, 
-						x, y, z2, 
-						x, y, z2 );
-	add_edge( points, 
-						x, y2, z2, 
-						x, y2, z2 );
-	add_edge( points, 
-						x2, y, z2, 
-						x2, y, z2 );
-	add_edge( points, 
-						x2, y2, z2, 
-						x2, y2, z2 );
+  // Front side
+  add_polygon(polygons,x,y,z, x2,y2,z, x2,y,z);
+  add_polygon(polygons,x,y,z, x,y2,z, x2,y2,z);
+	
+  // Back side
+  add_polygon(polygons,x,y,z2, x2,y,z2, x2,y2,z2);
+  add_polygon(polygons,x,y,z2, x2,y2,z2, x,y2,z2);
+	
+  // Top side
+  add_polygon(polygons,x,y,z, x2,y,z, x2,y,z2);
+  add_polygon(polygons,x,y,z, x2,y,z2, x,y,z2);
+	
+  //  Bottom side
+  add_polygon(polygons,x,y2,z, x2,y2,z2, x2,y2,z);
+  add_polygon(polygons,x,y2,z, x,y2,z2, x2,y2,z2);
+	
+	// Left side 
+	add_polygon(polygons,x,y,z, x,y,z2, x,y2,z2);
+	add_polygon(polygons,x,y,z, x,y2,z2, x,y2,z);
+	
+	// Right side
+	add_polygon(polygons,x2,y,z, x2,y2,z, x2,y2,z2);
+	add_polygon(polygons,x2,y,z, x2,y2,z2, x2,y,z2);
+
 }
   
 /*======== void add_circle() ==========
@@ -461,193 +585,193 @@ void add_curve( struct matrix *points,
 
 	free_matrix(xcoefs);
 	free_matrix(ycoefs);
-}
+	}
 
-/*======== void add_point() ==========
-	Inputs:   struct matrix * points
-	int x
-	int y
-	int z 
-	Returns: 
-	adds point (x, y, z) to points and increment points.lastcol
-	if points is full, should call grow on points
-	====================*/
-void add_point( struct matrix * points, double x, double y, double z) {
+	/*======== void add_point() ==========
+		Inputs:   struct matrix * points
+		int x
+		int y
+		int z 
+		Returns: 
+		adds point (x, y, z) to points and increment points.lastcol
+		if points is full, should call grow on points
+		====================*/
+	void add_point( struct matrix * points, double x, double y, double z) {
   
-	if ( points->lastcol == points->cols )
-		grow_matrix( points, points->lastcol + 100 );
+		if ( points->lastcol == points->cols )
+			grow_matrix( points, points->lastcol + 100 );
 
-	points->m[0][points->lastcol] = x;
-	points->m[1][points->lastcol] = y;
-	points->m[2][points->lastcol] = z;
-	points->m[3][points->lastcol] = 1;
+		points->m[0][points->lastcol] = x;
+		points->m[1][points->lastcol] = y;
+		points->m[2][points->lastcol] = z;
+		points->m[3][points->lastcol] = 1;
 
-	points->lastcol++;
-}
+		points->lastcol++;
+	}
 
-/*======== void add_edge() ==========
-	Inputs:   struct matrix * points
-	int x0, int y0, int z0, int x1, int y1, int z1
-	Returns: 
-	add the line connecting (x0, y0, z0) to (x1, y1, z1) to points
-	should use add_point
-	====================*/
-void add_edge( struct matrix * points, 
-							 double x0, double y0, double z0, 
-							 double x1, double y1, double z1) {
-	add_point( points, x0, y0, z0 );
-	add_point( points, x1, y1, z1 );
-}
+	/*======== void add_edge() ==========
+		Inputs:   struct matrix * points
+		int x0, int y0, int z0, int x1, int y1, int z1
+		Returns: 
+		add the line connecting (x0, y0, z0) to (x1, y1, z1) to points
+		should use add_point
+		====================*/
+	void add_edge( struct matrix * points, 
+								 double x0, double y0, double z0, 
+								 double x1, double y1, double z1) {
+		add_point( points, x0, y0, z0 );
+		add_point( points, x1, y1, z1 );
+	}
 
-/*======== void draw_lines() ==========
-	Inputs:   struct matrix * points
-	screen s
-	color c 
-	Returns: 
-	Go through points 2 at a time and call draw_line to add that line
-	to the screen
-	====================*/
-void draw_lines( struct matrix * points, screen s, color c) {
+	/*======== void draw_lines() ==========
+		Inputs:   struct matrix * points
+		screen s
+		color c 
+		Returns: 
+		Go through points 2 at a time and call draw_line to add that line
+		to the screen
+		====================*/
+	void draw_lines( struct matrix * points, screen s, color c) {
 
-	int i;
+		int i;
  
-	if ( points->lastcol < 2 ) {
+		if ( points->lastcol < 2 ) {
     
-		printf("Need at least 2 points to draw a line!\n");
-		return;
+			printf("Need at least 2 points to draw a line!\n");
+			return;
+		}
+
+		for ( i = 0; i < points->lastcol - 1; i+=2 ) {
+
+			draw_line( points->m[0][i], points->m[1][i], 
+								 points->m[0][i+1], points->m[1][i+1], s, c);
+			//FOR DEMONSTRATION PURPOSES ONLY
+			//draw extra pixels so points can actually be seen    
+			/*
+				draw_line( points->m[0][i]+1, points->m[1][i], 
+				points->m[0][i+1]+1, points->m[1][i+1], s, c);
+				draw_line( points->m[0][i], points->m[1][i]+1, 
+				points->m[0][i+1], points->m[1][i+1]+1, s, c);
+				draw_line( points->m[0][i]-1, points->m[1][i], 
+				points->m[0][i+1]-1, points->m[1][i+1], s, c);
+				draw_line( points->m[0][i], points->m[1][i]-1, 
+				points->m[0][i+1], points->m[1][i+1]-1, s, c);
+				draw_line( points->m[0][i]+1, points->m[1][i]+1, 
+				points->m[0][i+1]+1, points->m[1][i+1]+1, s, c);
+				draw_line( points->m[0][i]-1, points->m[1][i]+1, 
+				points->m[0][i+1]-1, points->m[1][i+1]+1, s, c);
+				draw_line( points->m[0][i]-1, points->m[1][i]-1, 
+				points->m[0][i+1]-1, points->m[1][i+1]-1, s, c);
+				draw_line( points->m[0][i]+1, points->m[1][i]-1, 
+				points->m[0][i+1]+1, points->m[1][i+1]-1, s, c);
+			*/
+		} 	       
 	}
 
-	for ( i = 0; i < points->lastcol - 1; i+=2 ) {
 
-		draw_line( points->m[0][i], points->m[1][i], 
-							 points->m[0][i+1], points->m[1][i+1], s, c);
-		//FOR DEMONSTRATION PURPOSES ONLY
-		//draw extra pixels so points can actually be seen    
-		/*
-			draw_line( points->m[0][i]+1, points->m[1][i], 
-			points->m[0][i+1]+1, points->m[1][i+1], s, c);
-			draw_line( points->m[0][i], points->m[1][i]+1, 
-			points->m[0][i+1], points->m[1][i+1]+1, s, c);
-			draw_line( points->m[0][i]-1, points->m[1][i], 
-			points->m[0][i+1]-1, points->m[1][i+1], s, c);
-			draw_line( points->m[0][i], points->m[1][i]-1, 
-			points->m[0][i+1], points->m[1][i+1]-1, s, c);
-			draw_line( points->m[0][i]+1, points->m[1][i]+1, 
-			points->m[0][i+1]+1, points->m[1][i+1]+1, s, c);
-			draw_line( points->m[0][i]-1, points->m[1][i]+1, 
-			points->m[0][i+1]-1, points->m[1][i+1]+1, s, c);
-			draw_line( points->m[0][i]-1, points->m[1][i]-1, 
-			points->m[0][i+1]-1, points->m[1][i+1]-1, s, c);
-			draw_line( points->m[0][i]+1, points->m[1][i]-1, 
-			points->m[0][i+1]+1, points->m[1][i+1]-1, s, c);
-		*/
-  } 	       
-}
-
-
-void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
+	void draw_line(int x0, int y0, int x1, int y1, screen s, color c) {
  
-  int x, y, d, dx, dy;
+		int x, y, d, dx, dy;
 
-  x = x0;
-  y = y0;
+		x = x0;
+		y = y0;
   
-  //swap points so we're always draing left to right
-  if ( x0 > x1 ) {
-    x = x1;
-    y = y1;
-    x1 = x0;
-    y1 = y0;
-  }
+		//swap points so we're always draing left to right
+		if ( x0 > x1 ) {
+			x = x1;
+			y = y1;
+			x1 = x0;
+			y1 = y0;
+		}
 
-  //need to know dx and dy for this version
-  dx = (x1 - x) * 2;
-  dy = (y1 - y) * 2;
+		//need to know dx and dy for this version
+		dx = (x1 - x) * 2;
+		dy = (y1 - y) * 2;
 
-  //positive slope: Octants 1, 2 (5 and 6)
-  if ( dy > 0 ) {
+		//positive slope: Octants 1, 2 (5 and 6)
+		if ( dy > 0 ) {
 
-    //slope < 1: Octant 1 (5)
-    if ( dx > dy ) {
-      d = dy - ( dx / 2 );
+			//slope < 1: Octant 1 (5)
+			if ( dx > dy ) {
+				d = dy - ( dx / 2 );
   
-      while ( x <= x1 ) {
-	plot(s, c, x, y);
+				while ( x <= x1 ) {
+					plot(s, c, x, y);
 
-	if ( d < 0 ) {
-	  x = x + 1;
-	  d = d + dy;
-	}
-	else {
-	  x = x + 1;
-	  y = y + 1;
-	  d = d + dy - dx;
-	}
-      }
-    }
+					if ( d < 0 ) {
+						x = x + 1;
+						d = d + dy;
+					}
+					else {
+						x = x + 1;
+						y = y + 1;
+						d = d + dy - dx;
+					}
+				}
+			}
 
-    //slope > 1: Octant 2 (6)
-    else {
-      d = ( dy / 2 ) - dx;
-      while ( y <= y1 ) {
+			//slope > 1: Octant 2 (6)
+			else {
+				d = ( dy / 2 ) - dx;
+				while ( y <= y1 ) {
 
-	plot(s, c, x, y );
-	if ( d > 0 ) {
-	  y = y + 1;
-	  d = d - dx;
-	}
-	else {
-	  y = y + 1;
-	  x = x + 1;
-	  d = d + dy - dx;
-	}
-      }
-    }
-  }
+					plot(s, c, x, y );
+					if ( d > 0 ) {
+						y = y + 1;
+						d = d - dx;
+					}
+					else {
+						y = y + 1;
+						x = x + 1;
+						d = d + dy - dx;
+					}
+				}
+			}
+		}
 
-  //negative slope: Octants 7, 8 (3 and 4)
-  else { 
+		//negative slope: Octants 7, 8 (3 and 4)
+		else { 
 
-    //slope > -1: Octant 8 (4)
-    if ( dx > abs(dy) ) {
+			//slope > -1: Octant 8 (4)
+			if ( dx > abs(dy) ) {
 
-      d = dy + ( dx / 2 );
+				d = dy + ( dx / 2 );
   
-      while ( x <= x1 ) {
+				while ( x <= x1 ) {
 
-	plot(s, c, x, y);
+					plot(s, c, x, y);
 
-	if ( d > 0 ) {
-	  x = x + 1;
-	  d = d + dy;
-	}
-	else {
-	  x = x + 1;
-	  y = y - 1;
-	  d = d + dy + dx;
-	}
-      }
-    }
+					if ( d > 0 ) {
+						x = x + 1;
+						d = d + dy;
+					}
+					else {
+						x = x + 1;
+						y = y - 1;
+						d = d + dy + dx;
+					}
+				}
+			}
 
-    //slope < -1: Octant 7 (3)
-    else {
+			//slope < -1: Octant 7 (3)
+			else {
 
-      d =  (dy / 2) + dx;
+				d =  (dy / 2) + dx;
 
-      while ( y >= y1 ) {
+				while ( y >= y1 ) {
 	
-	plot(s, c, x, y );
-	if ( d < 0 ) {
-	  y = y - 1;
-	  d = d + dx;
+					plot(s, c, x, y );
+					if ( d < 0 ) {
+						y = y - 1;
+						d = d + dx;
+					}
+					else {
+						y = y - 1;
+						x = x + 1;
+						d = d + dy + dx;
+					}
+				}
+			}
+		}
 	}
-	else {
-	  y = y - 1;
-	  x = x + 1;
-	  d = d + dy + dx;
-	}
-      }
-    }
-  }
-}
 
